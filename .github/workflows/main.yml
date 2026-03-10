@@ -1,30 +1,22 @@
-name: Deploy
+name: React Todo CI/CD
 
 on:
   push:
     branches:
       - main
+      - feature
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
-          node-version: '16.x'
+          node-version: 16
 
-      - name: Install dependencies
-        run: npm install
+      - run: npm install
 
-      - name: Run build
-        run: npm run build
-
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: build
-          path: ./build
+      - run: npm run build
