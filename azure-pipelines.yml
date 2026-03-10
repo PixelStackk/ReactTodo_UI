@@ -1,0 +1,66 @@
+---
+trigger:
+- main
+pool: Todo_Microservice_Agent_Pool
+variables:
+  NODE_PATH: /Users/brijendra/.nvm/versions/node/v16.20.2/bin
+
+jobs:
+
+- job: lint
+  displayName: Lint
+  steps:
+  - task: PowerShell@2
+    continueOnError: true
+    displayName: Lint JavaScript(Biome)
+    inputs:
+      targetType: 'inline'
+      script: |
+        Invoke-WebRequest -Uri "https://github.com/biomejs/biome/releases/download/%40biomejs%2Fbiome%402.3.8/biome-darwin-arm64" -OutFile "$(Agent.ToolsDirectory)/biome-darwin-arm64"
+        $(Agent.ToolsDirectory)/biome-darwin-arm64 lint $(System.DefaultWorkingDirectory)/src/
+  - task: PowerShell@2
+    displayName: "YAML Linting (yamllint)"
+    inputs:
+      targetType: 'inline'
+      script: |
+        pipx install yamllint
+        yamllint $(System.DefaultWorkingDirectory)
+
+- job: NodeInstall
+  displayName: Node_Install
+  dependsOn: lint
+  steps:
+
+  # TEST NODE
+  - pwsh: |
+      node -v
+      npm -v
+    env:
+      PATH: "$(PATH):$(NODE_PATH)"
+    displayName: "Check Node & NPM"
+
+ # NPM INSTALL
+  - task: PowerShell@2
+    env:
+      PATH: "$(PATH):$(NODE_PATH)"
+    inputs:
+      targetType: 'inline'
+      script: |
+        npm install
+
+  # NPM BUILD
+  - task: PowerShell@2
+    env:
+      PATH: "$(PATH):$(NODE_PATH)"
+    inputs:
+      targetType: 'inline'
+      script: |
+        npm run build
+
+  # PUBLISH ARTIFACT
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: '$(System.DefaultWorkingDirectory)'
+      artifact: 'build'
+      publishLocation: 'pipeline'
+      
