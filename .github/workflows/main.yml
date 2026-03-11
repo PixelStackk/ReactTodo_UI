@@ -9,8 +9,7 @@ jobs:
 
   lint:
     name: Lint
-    runs-on: Todo_Runner
-    continue-on-error: true
+    runs-on: [self-hosted, Windows, X64]
 
     steps:
       - name: Checkout repository
@@ -44,7 +43,7 @@ jobs:
   build:
     name: Build
     needs: lint
-    runs-on: Todo_Runner
+    runs-on: [self-hosted, Windows, X64]
 
     steps:
       - name: Checkout repository
