@@ -9,7 +9,7 @@ jobs:
 
   lint:
     name: Lint
-    runs-on: [Todo_Runner]
+    runs-on: [Self_Hosted, Windows]
     continue-on-error: true
 
     steps:
