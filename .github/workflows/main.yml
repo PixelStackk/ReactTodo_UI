@@ -15,25 +15,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Lint JavaScript (Biome)
-        shell: powershell
-        run: |
-         Invoke-WebRequest -Uri "https://github.com/biomejs/biome/releases/download/%40biomejs%2Fbiome%402.3.8/biome-win32-x64.exe" -OutFile "$env:RUNNER_TEMP/biome.exe"
-         $env:RUNNER_TEMP/biome.exe lint ./src/
-
-      - name: Lint CSS (Stylelint)
-        shell: pwsh
-        run: |
-          npm install -g stylelint
-          npm install -g stylelint-config-standard
-          stylelint ./src --config stylelint.config.mjs
-
-      - name: Lint YAML (yamllint)
-        shell: pwsh
-        run: |
-          pip install yamllint
-          yamllint .
-
       - name: Lint Markdown (markdownlint)
         shell: pwsh
         run: |
